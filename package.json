@@ -1,0 +1,305 @@
+import React, { useState, useEffect, useRef } from "react";
+
+const GRID_SIZE = 20;
+const CELL_SIZE = 25; // pixels per cell
+const CANVAS_SIZE = GRID_SIZE * CELL_SIZE;
+const INITIAL_SNAKE = [{ x: 10, y: 10 }];
+const INITIAL_SNAKE2 = [{ x: 5, y: 5 }];
+
+const DIRECTIONS = {
+  ArrowUp: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 },
+};
+
+export default function App() {
+  const canvasRef = useRef(null);
+
+  const [playerName, setPlayerName] = useState("");
+  const [nameSubmitted, setNameSubmitted] = useState(false);
+  const [multiplayer, setMultiplayer] = useState(false);
+
+  const [snake1, setSnake1] = useState(INITIAL_SNAKE);
+  const [snake2, setSnake2] = useState(INITIAL_SNAKE2);
+  const [food, setFood] = useState({ x: 15, y: 15 });
+
+  const [dir1, setDir1] = useState(DIRECTIONS.ArrowRight);
+  const [score1, setScore1] = useState(0);
+  const [score2, setScore2] = useState(0);
+
+  const [gameOver, setGameOver] = useState(false);
+  const [speedBoost, setSpeedBoost] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const moveRef1 = useRef(dir1);
+  moveRef1.current = dir1;
+
+  // Generate food not inside snakes
+  const generateFood = (snakeA, snakeB) => {
+    let newFood;
+    do {
+      newFood = {
+        x: Math.floor(Math.random() * GRID_SIZE),
+        y: Math.floor(Math.random() * GRID_SIZE),
+      };
+    } while (
+      snakeA.some((seg) => seg.x === newFood.x && seg.y === newFood.y) ||
+      snakeB.some((seg) => seg.x === newFood.x && seg.y === newFood.y)
+    );
+    return newFood;
+  };
+
+  // Key input
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (DIRECTIONS[e.key]) {
+        const newDir = DIRECTIONS[e.key];
+        if (
+          newDir.x !== -moveRef1.current.x ||
+          newDir.y !== -moveRef1.current.y
+        ) {
+          setDir1(newDir);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Game loop
+  useEffect(() => {
+    if (!nameSubmitted || gameOver) return;
+
+    const intervalTime = speedBoost ? 75 : 150;
+
+    const interval = setInterval(() => {
+      setSnake1((prev) => {
+        const newHead = {
+          x: (prev[0].x + moveRef1.current.x + GRID_SIZE) % GRID_SIZE,
+          y: (prev[0].y + moveRef1.current.y + GRID_SIZE) % GRID_SIZE,
+        };
+
+        if (prev.some((seg) => seg.x === newHead.x && seg.y === newHead.y)) {
+          setGameOver(true);
+          setShowPopup(true);
+          clearInterval(interval);
+          return prev;
+        }
+
+        let newSnake = [newHead, ...prev];
+        if (newHead.x === food.x && newHead.y === food.y) {
+          setScore1((prev) => prev + 1);
+          setFood(generateFood(newSnake, multiplayer ? snake2 : []));
+        } else {
+          newSnake.pop();
+        }
+        return newSnake;
+      });
+
+      if (multiplayer) {
+        setSnake2((prev) => {
+          const head = prev[0];
+          const diffX = food.x - head.x;
+          const diffY = food.y - head.y;
+          let newHead = { x: head.x, y: head.y };
+
+          if (Math.abs(diffX) > Math.abs(diffY))
+            newHead.x += diffX > 0 ? 1 : -1;
+          else newHead.y += diffY > 0 ? 1 : -1;
+
+          newHead.x = (newHead.x + GRID_SIZE) % GRID_SIZE;
+          newHead.y = (newHead.y + GRID_SIZE) % GRID_SIZE;
+
+          if (
+            prev.some((seg) => seg.x === newHead.x && seg.y === newHead.y) ||
+            snake1.some((seg) => seg.x === newHead.x && seg.y === newHead.y)
+          ) {
+            setGameOver(true);
+            setShowPopup(true);
+            clearInterval(interval);
+            return prev;
+          }
+
+          let newSnake = [newHead, ...prev];
+          if (newHead.x === food.x && newHead.y === food.y) {
+            setScore2((prev) => prev + 1);
+            setFood(generateFood(snake1, newSnake));
+          } else {
+            newSnake.pop();
+          }
+          return newSnake;
+        });
+      }
+    }, intervalTime);
+
+    let boostTimeout;
+    if (speedBoost) {
+      boostTimeout = setTimeout(() => setSpeedBoost(false), 10000);
+    }
+
+    return () => {
+      clearInterval(interval);
+      if (boostTimeout) clearTimeout(boostTimeout);
+    };
+  }, [nameSubmitted, food, snake1, snake2, score1, score2, gameOver, multiplayer, speedBoost]);
+
+  // Draw on canvas
+  useEffect(() => {
+    const ctx = canvasRef.current.getContext("2d");
+
+    ctx.fillStyle = "#1f2937"; // bg-gray-800
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    // Food
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(
+      food.x * CELL_SIZE + CELL_SIZE / 2,
+      food.y * CELL_SIZE + CELL_SIZE / 2,
+      CELL_SIZE / 2 - 2,
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
+
+    // Snake 1
+    snake1.forEach((seg, i) => {
+      ctx.fillStyle = i === 0 ? "limegreen" : "green";
+      ctx.fillRect(
+        seg.x * CELL_SIZE,
+        seg.y * CELL_SIZE,
+        CELL_SIZE - 2,
+        CELL_SIZE - 2
+      );
+    });
+
+    // Snake 2
+    if (multiplayer) {
+      snake2.forEach((seg, i) => {
+        ctx.fillStyle = i === 0 ? "deepskyblue" : "blue";
+        ctx.fillRect(
+          seg.x * CELL_SIZE,
+          seg.y * CELL_SIZE,
+          CELL_SIZE - 2,
+          CELL_SIZE - 2
+        );
+      });
+    }
+  }, [snake1, snake2, food, multiplayer]);
+
+  const restartGame = () => {
+    setSnake1(INITIAL_SNAKE);
+    setSnake2(INITIAL_SNAKE2);
+    setFood({ x: 15, y: 15 });
+    setScore1(0);
+    setScore2(0);
+    setGameOver(false);
+    setDir1(DIRECTIONS.ArrowRight);
+    setSpeedBoost(false);
+    setShowPopup(false);
+  };
+
+  // Name input screen
+  if (!nameSubmitted) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white relative">
+        <h1 className="text-6xl mb-6 font-extrabold text-green-400 drop-shadow-lg">
+          Snake Game by Muhit
+        </h1>
+        <h2 className="text-2xl mb-4">Enter your name:</h2>
+        <input
+          className="p-2 rounded bg-white text-black shadow-md"
+          type="text"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+        />
+        <div className="flex flex-col space-y-4 mt-6">
+          <button
+            className="px-6 py-2 bg-green-600 rounded-lg shadow-lg hover:opacity-90"
+            onClick={() =>
+              playerName && (setMultiplayer(false), setNameSubmitted(true))
+            }
+          >
+            Single Player
+          </button>
+          <button
+            className="px-6 py-2 bg-purple-600 rounded-lg shadow-lg hover:opacity-90"
+            onClick={() =>
+              playerName && (setMultiplayer(true), setNameSubmitted(true))
+            }
+          >
+            Multiplayer
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+      <h2 className="text-xl mb-2">
+        {playerName}'s Score: {score1}{" "}
+        {multiplayer && `| AI Score: ${score2}`}
+      </h2>
+      <canvas
+        ref={canvasRef}
+        width={CANVAS_SIZE}
+        height={CANVAS_SIZE}
+        className="border-4 border-gray-700 rounded-lg shadow-lg"
+      />
+      <div className="grid grid-cols-3 gap-2 mt-6">
+        <div></div>
+        <button
+          className="px-4 py-2 bg-blue-600 rounded"
+          onClick={() => setDir1(DIRECTIONS.ArrowUp)}
+        >
+          ↑
+        </button>
+        <div></div>
+        <button
+          className="px-4 py-2 bg-blue-600 rounded"
+          onClick={() => setDir1(DIRECTIONS.ArrowLeft)}
+        >
+          ←
+        </button>
+        <div></div>
+        <button
+          className="px-4 py-2 bg-blue-600 rounded"
+          onClick={() => setDir1(DIRECTIONS.ArrowRight)}
+        >
+          →
+        </button>
+        <div></div>
+        <button
+          className="px-4 py-2 bg-blue-600 rounded"
+          onClick={() => setDir1(DIRECTIONS.ArrowDown)}
+        >
+          ↓
+        </button>
+        <div></div>
+      </div>
+      {!gameOver && (
+        <button
+          className="mt-4 px-4 py-2 bg-red-600 rounded hover:bg-red-700"
+          onClick={() => setSpeedBoost(!speedBoost)}
+        >
+          {speedBoost ? "Disable Speed Boost" : "Enable Speed Boost"}
+        </button>
+      )}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-900 p-8 rounded-lg shadow-lg text-center">
+            <h1 className="text-3xl text-red-500 mb-4">Game Over!</h1>
+            <button
+              className="px-4 py-2 bg-green-600 rounded hover:bg-green-700"
+              onClick={restartGame}
+            >
+              Restart
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
