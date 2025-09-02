@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake Game</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Snake Game</h1>
+<div id="nameInput">
+  Name: <input type="text" id="playerName" placeholder="Enter your name">
+  <button onclick="startGame(false)">Single Player</button>
+  <button onclick="startGame(true)">Multiplayer AI</button>
+</div>
+
+<h2 id="scoreDisplay"></h2>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+
+<button onclick="toggleBoost()" id="boostBtn">Enable Speed Boost</button>
+
+<div id="popup">
+  <div id="popup-content">
+    <h2>Game Over!</h2>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
