@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  background: #111827;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+canvas {
+  background: #1f2937;
+  display: block;
+  margin-top: 20px;
+  touch-action: none; /* prevent scrolling on swipe */
+}
+button {
+  padding: 10px;
+  background: #2563eb;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+button:hover { background: #1d4ed8; }
+#popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#popup-content {
+  background: #111827;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+#nameInput {
+  margin-bottom: 10px;
+}
