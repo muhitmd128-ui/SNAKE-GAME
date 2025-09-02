@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake Game</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Snake Game</h1>
+<h2 id="scoreDisplay"></h2>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+
+<button onclick="toggleBoost()" id="boostBtn">
+  <img src="fire-icon.png" alt="Speed Boost" width="30">
+</button>
+
+<div id="popup">
+  <div id="popup-content">
+    <h2>Game Over!</h2>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+// Get player info from localStorage
+const storedName = localStorage.getItem('playerName') || 'Player';
+const storedMulti = localStorage.getItem('multiplayer') === 'true';
+
+document.getElementById('scoreDisplay').innerText = storedName+"'s Score: 0";
+startGame(storedMulti);
+</script>
+</body>
+</html>
