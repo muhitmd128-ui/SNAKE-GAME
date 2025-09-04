@@ -12,10 +12,12 @@
 <h2 id="scoreDisplay"></h2>
 <canvas id="gameCanvas" width="400" height="400"></canvas>
 
+<!-- Fire Boost Button -->
 <button onclick="toggleBoost()" id="boostBtn">
-  <img src="fire-icon.png" alt="Speed Boost" width="30">
+  <img src="https://i.ibb.co/6mwpx3N/fire-icon.png" alt="Speed Boost">
 </button>
 
+<!-- Game Over Popup -->
 <div id="popup">
   <div id="popup-content">
     <h2>Game Over!</h2>
@@ -25,7 +27,7 @@
 
 <script src="script.js"></script>
 <script>
-// Get player info from localStorage
+// Get player info
 const storedName = localStorage.getItem('playerName') || 'Player';
 const storedMulti = localStorage.getItem('multiplayer') === 'true';
 
