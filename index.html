@@ -3,30 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake Game</title>
+<title>Snake Game - Start</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<h1>Snake Game</h1>
-<div id="nameInput">
-  Name: <input type="text" id="playerName" placeholder="Enter your name">
-  <button onclick="startGame(false)">Single Player</button>
-  <button onclick="startGame(true)">Multiplayer AI</button>
-</div>
-
-<h2 id="scoreDisplay"></h2>
-<canvas id="gameCanvas" width="400" height="400"></canvas>
-
-<button onclick="toggleBoost()" id="boostBtn">Enable Speed Boost</button>
-
-<div id="popup">
-  <div id="popup-content">
-    <h2>Game Over!</h2>
-    <button onclick="restartGame()">Restart</button>
+<div class="start-bg">
+  <h1>Snake Game</h1>
+  <div id="nameInput">
+    <input type="text" id="playerName" placeholder="Enter your name">
+    <button onclick="startGame(false)">Single Player</button>
+    <button onclick="startGame(true)">Multiplayer AI</button>
   </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+function startGame(isMultiplayer) {
+  const playerName = document.getElementById('playerName').value || 'Player';
+  localStorage.setItem('playerName', playerName);
+  localStorage.setItem('multiplayer', isMultiplayer);
+  window.location.href = 'game.html';
+}
+</script>
 </body>
 </html>
