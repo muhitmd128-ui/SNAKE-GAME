@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake Game - Start</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game - Start</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="start-bg">
-  <h1>Snake Game</h1>
-  <div id="nameInput">
-    <input type="text" id="playerName" placeholder="Enter your name">
-    <button onclick="startGame(false)">Single Player</button>
-    <button onclick="startGame(true)">Multiplayer AI</button>
+  <div class="start-bg">
+    <div class="start-card">
+      <h1 class="title">🐍 Snake Game</h1>
+      <input type="text" id="playerName" placeholder="Enter your name">
+      <div class="button-group">
+        <button onclick="startGame(false)">Single Player</button>
+        <button onclick="startGame(true)">Multiplayer AI</button>
+      </div>
+    </div>
   </div>
-</div>
 
-<script>
-function startGame(isMultiplayer) {
-  const playerName = document.getElementById('playerName').value || 'Player';
-  localStorage.setItem('playerName', playerName);
-  localStorage.setItem('multiplayer', isMultiplayer);
-  window.location.href = 'game.html';
-}
-</script>
+  <script>
+    function startGame(isMultiplayer) {
+      const playerName = document.getElementById('playerName').value || 'Player';
+      localStorage.setItem('playerName', playerName);
+      localStorage.setItem('multiplayer', isMultiplayer);
+      window.location.href = 'game.html';
+    }
+  </script>
 </body>
 </html>
