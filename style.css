@@ -1,44 +1,33 @@
-body {
-  margin: 0;
-  background: #111827;
-  color: white;
-  font-family: Arial, sans-serif;
+/* Fire Boost Button */
+#boostBtn img {
+  width: 40px;
+  height: 40px;
+  animation: flicker 1s infinite alternate;
+}
+
+@keyframes flicker {
+  0%   { filter: drop-shadow(0 0 5px orange) drop-shadow(0 0 10px red); }
+  100% { filter: drop-shadow(0 0 15px yellow) drop-shadow(0 0 25px orange); }
+}
+
+/* Snake Head Glow */
+.snake-head-glow {
+  filter: drop-shadow(0 0 8px lime) drop-shadow(0 0 15px greenyellow);
+}
+
+/* Background page styling */
+.start-bg {
+  width: 100%;
+  height: 100vh;
+  background: url('snake-background.jpg') no-repeat center center/cover;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
 }
-canvas {
-  background: #1f2937;
-  display: block;
-  margin-top: 20px;
-  touch-action: none; /* prevent scrolling on swipe */
-}
-button {
-  padding: 10px;
-  background: #2563eb;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-button:hover { background: #1d4ed8; }
-#popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
-#popup-content {
-  background: #111827;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-}
-#nameInput {
-  margin-bottom: 10px;
+
+.start-bg h1 {
+  font-size: 4em;
+  color: #34d399;
+  text-shadow: 2px 2px #000;
 }
