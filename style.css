@@ -1,33 +1,99 @@
-/* Fire Boost Button */
-#boostBtn img {
-  width: 40px;
-  height: 40px;
-  animation: flicker 1s infinite alternate;
+/* Reset + base */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-@keyframes flicker {
-  0%   { filter: drop-shadow(0 0 5px orange) drop-shadow(0 0 10px red); }
-  100% { filter: drop-shadow(0 0 15px yellow) drop-shadow(0 0 25px orange); }
-}
-
-/* Snake Head Glow */
-.snake-head-glow {
-  filter: drop-shadow(0 0 8px lime) drop-shadow(0 0 15px greenyellow);
-}
-
-/* Background page styling */
+/* Start Page Background */
 .start-bg {
   width: 100%;
-  height: 100vh;
-  background: url('snake-background.jpg') no-repeat center center/cover;
+  height: 100%;
+  background: url('https://i.ibb.co/ZM4fzfX/snake-bg.jpg') no-repeat center center/cover;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
-.start-bg h1 {
-  font-size: 4em;
-  color: #34d399;
-  text-shadow: 2px 2px #000;
+/* Card Style */
+.start-card {
+  background: rgba(17, 24, 39, 0.85); /* glassmorphism dark */
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  width: 90%;
+  max-width: 400px;
+  animation: fadeIn 1s ease-out;
+}
+
+/* Title with gradient glow */
+.title {
+  font-size: 2.5em;
+  font-weight: 700;
+  background: linear-gradient(90deg, #34d399, #3b82f6, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0px 0px 10px rgba(52, 211, 153, 0.6);
+  margin-bottom: 25px;
+}
+
+/* Input field */
+#playerName {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 1em;
+  margin-bottom: 20px;
+  background: #1e293b;
+  color: white;
+  text-align: center;
+  transition: 0.3s;
+}
+
+#playerName:focus {
+  background: #334155;
+  box-shadow: 0 0 10px #3b82f6;
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+button {
+  padding: 12px;
+  font-size: 1em;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(90deg, #3b82f6, #9333ea);
+  color: white;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
